@@ -1,9 +1,21 @@
 {
   "name": "safekeys-core",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "TypeScript/JavaScript encryption library for SafeKeys ecosystem - Cross-platform password management core",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "clean": "rm -rf dist",
+    "prebuild": "npm run clean",
+    "prepublishOnly": "npm run build",
     "test": "vitest",
     "test:coverage": "vitest --coverage"
   },
@@ -11,9 +23,18 @@
     "type": "git",
     "url": "git+https://github.com/SafeKeys-App/SafeKeys-Core.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "encryption",
+    "password-manager",
+    "security",
+    "typescript",
+    "aes-gcm",
+    "pbkdf2",
+    "vault",
+    "cross-platform"
+  ],
+  "author": "SafeKeys Team",
+  "license": "MIT",
   "type": "commonjs",
   "bugs": {
     "url": "https://github.com/SafeKeys-App/SafeKeys-Core/issues"
@@ -21,13 +42,16 @@
   "homepage": "https://github.com/SafeKeys-App/SafeKeys-Core#readme",
   "dependencies": {
     "crypto-aes-gcm": "^2.0.3",
-    "typescript": "^5.8.3",
     "zod": "^3.25.46"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
     "@vitest/coverage-v8": "^3.1.4",
     "@vitest/ui": "^3.1.4",
+    "typescript": "^5.8.3",
     "vitest": "^3.1.4"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   }
 }
