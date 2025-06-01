@@ -20,7 +20,8 @@
   "homepage": "https://github.com/SafeKeys-App/SafeKeys-Core#readme",
   "dependencies": {
     "crypto-aes-gcm": "^2.0.3",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "zod": "^3.25.46"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
