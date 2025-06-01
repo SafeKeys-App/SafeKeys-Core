@@ -18,7 +18,8 @@
     "url": "https://github.com/SafeKeys-App/SafeKeys-Core/issues"
   },
   "homepage": "https://github.com/SafeKeys-App/SafeKeys-Core#readme",
-  "devDependencies": {
+  "dependencies": {
+    "crypto-aes-gcm": "^2.0.3",
     "typescript": "^5.8.3"
   }
 }
