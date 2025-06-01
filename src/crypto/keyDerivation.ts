@@ -1,7 +1,7 @@
-export const deriveKey = async (
+export async function deriveKey(
   password: string,
   salt: Uint8Array
-): Promise<CryptoKey> => {
+): Promise<CryptoKey> {
   const enc = new TextEncoder();
   const keyMaterial = await crypto.subtle.importKey(
     "raw",
@@ -23,17 +23,49 @@ export const deriveKey = async (
     true,
     ["encrypt", "decrypt"]
   );
-};
+}
 
-export const generateSalt = (): Uint8Array => {
-  const salt = new Uint8Array(32);
-  crypto.getRandomValues(salt);
-  return salt;
-};
+/**
+ * Generates a cryptographically secure random salt
+ * @returns A 32-byte Uint8Array salt
+ */
+export function generateSalt(): Uint8Array {
+  return crypto.getRandomValues(new Uint8Array(32));
+}
 
-export const keyToString = (key: CryptoKey): Promise<String> => {
-  return crypto.subtle.exportKey("raw", key).then((rawKey) => {
-    const keyArray = new Uint8Array(rawKey);
-    return btoa(String.fromCharCode(...keyArray));
-  });
-};
+/**
+ * Serializes a CryptoKey to a string for storage/transmission
+ * @param key - The CryptoKey to serialize
+ * @returns Promise<string> - Base64 encoded JWK string
+ */
+export async function keyToString(key: CryptoKey): Promise<string> {
+  const jwk = await crypto.subtle.exportKey("jwk", key);
+  const jwkString = JSON.stringify(jwk);
+  return btoa(jwkString);
+}
+
+/**
+ * Deserializes a string back to a CryptoKey
+ * @param keyString - Base64 encoded JWK string
+ * @returns Promise<CryptoKey> - The reconstructed CryptoKey
+ */
+export async function stringToKey(keyString: string): Promise<CryptoKey> {
+  try {
+    const jwkString = atob(keyString);
+    const jwk = JSON.parse(jwkString);
+
+    return await crypto.subtle.importKey(
+      "jwk",
+      jwk,
+      { name: "AES-GCM" },
+      true,
+      ["encrypt", "decrypt"]
+    );
+  } catch (error) {
+    throw new Error(
+      `Failed to deserialize key: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
+    );
+  }
+}
