@@ -1,15 +1,15 @@
 import { aes_gcm_decrypt, aes_gcm_encrypt } from "crypto-aes-gcm";
 
-export async function encryptVault(
+export const encryptVault = async (
   plainText: string,
   password: string
-): Promise<string> {
+): Promise<string> => {
   return await aes_gcm_encrypt(plainText, password);
-}
+};
 
-export async function decryptVault(
+export const decryptVault = async (
   cipherText: string,
   password: string
-): Promise<string> {
+): Promise<string> => {
   return await aes_gcm_decrypt(cipherText, password);
-}
+};
