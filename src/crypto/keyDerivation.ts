@@ -1,7 +1,7 @@
-export async function deriveKey(
+export const deriveKey = async (
   password: string,
   salt: Uint8Array
-): Promise<CryptoKey> {
+): Promise<CryptoKey> => {
   const enc = new TextEncoder();
   const keyMaterial = await crypto.subtle.importKey(
     "raw",
@@ -23,4 +23,10 @@ export async function deriveKey(
     true,
     ["encrypt", "decrypt"]
   );
-}
+};
+
+export const generateSalt = (): Uint8Array => {
+  const salt = new Uint8Array(32);
+  crypto.getRandomValues(salt);
+  return salt;
+};
