@@ -30,3 +30,10 @@ export const generateSalt = (): Uint8Array => {
   crypto.getRandomValues(salt);
   return salt;
 };
+
+export const keyToString = (key: CryptoKey): Promise<String> => {
+  return crypto.subtle.exportKey("raw", key).then((rawKey) => {
+    const keyArray = new Uint8Array(rawKey);
+    return btoa(String.fromCharCode(...keyArray));
+  });
+};
