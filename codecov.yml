@@ -1,0 +1,21 @@
+codecov:
+  notify:
+    after_n_builds: 1
+
+coverage:
+  status:
+    project:
+      default:
+        target: auto # ou un seuil fixe comme 80%
+        threshold: 1% # tolérance de variation
+        informational: false
+    patch:
+      default:
+        target: auto
+        threshold: 0%
+        informational: false
+
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: false
