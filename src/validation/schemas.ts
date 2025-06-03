@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { EntryCategory, FieldType } from "../types/vault";
+import { EntryCategory, FieldType } from "../types";
 
 const urlSchema = z.string().url("Invalid URL format").optional();
 const emailSchema = z.string().email("Invalid email format");

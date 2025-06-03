@@ -1,4 +1,4 @@
-import { EntryCategory, FieldType } from "../src/types/vault";
+import { EntryCategory, FieldType } from "../src/types";
 import {
   parseCreateVaultEntry,
   parseVaultEntry,

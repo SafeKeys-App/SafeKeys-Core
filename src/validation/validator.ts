@@ -1,9 +1,5 @@
 import { z } from "zod";
-import {
-  ValidationError,
-  ValidationResult,
-  ValidationWarning,
-} from "../types/vault";
+import { ValidationError, ValidationResult, ValidationWarning } from "../types";
 import {
   createCustomFieldSchema,
   createVaultEntrySchema,
