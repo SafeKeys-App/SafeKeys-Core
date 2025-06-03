@@ -1,9 +1,5 @@
-// Polyfill pour l'API crypto
-import "./crypto/polyfill";
-
 // Crypto exports
-export * from "./crypto/encryption";
-export * from "./crypto/keyDerivation";
+export * from "./crypto";
 
 // Vault exports
 export * from "./vault";
