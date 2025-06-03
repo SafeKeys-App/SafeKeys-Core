@@ -26,6 +26,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Setup Node.js crypto
+        run: |
+          echo "NODE_OPTIONS=--experimental-global-webcrypto" >> $GITHUB_ENV
+
       - name: Run tests
         run: npm test
 
