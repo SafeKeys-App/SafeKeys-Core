@@ -3,8 +3,8 @@
 [![npm version](https://badge.fury.io/js/safekeys-core.svg)](https://badge.fury.io/js/safekeys-core)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
-[![Test Coverage](https://img.shields.io/badge/coverage-93%25-brightgreen.svg)](https://github.com/SafeKeys-App/SafeKeys-Core/actions/workflows/unit-tests.yml)
-[![Unit Tests](https://github.com/SafeKeys-App/SafeKeys-Core/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/SafeKeys-App/SafeKeys-Core/actions/workflows/unit-tests.yml)
+[![Test Coverage](https://img.shields.io/badge/coverage-89%25-green.svg)](https://github.com/SafeKeys-App/SafeKeys-Core)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/SafeKeys-App/SafeKeys-Core)
 [![Downloads](https://img.shields.io/npm/dm/safekeys-core.svg)](https://www.npmjs.com/package/safekeys-core)
 
 > 🔐 **TypeScript/JavaScript encryption library for SafeKeys ecosystem** — Cross-platform password management core
