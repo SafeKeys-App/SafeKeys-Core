@@ -84,6 +84,21 @@ async function exportEncryptedVault(
       masterPassword!
     );
 
+    // S'assurer que les dates sont au format string pour le metadata
+    const createdAtStr =
+      typeof vault.createdAt === "string"
+        ? vault.createdAt
+        : vault.createdAt instanceof Date
+        ? vault.createdAt.toISOString()
+        : new Date().toISOString();
+
+    const updatedAtStr =
+      typeof vault.updatedAt === "string"
+        ? vault.updatedAt
+        : vault.updatedAt instanceof Date
+        ? vault.updatedAt.toISOString()
+        : new Date().toISOString();
+
     // Créer l'objet EncryptedVault
     const encryptedVault: EncryptedVault = {
       data: encrypted,
@@ -92,8 +107,8 @@ async function exportEncryptedVault(
       version: VAULT_VERSION,
       metadata: {
         name: vault.name,
-        createdAt: vault.createdAt.toISOString(),
-        lastModified: vault.updatedAt.toISOString(),
+        createdAt: createdAtStr,
+        lastModified: updatedAtStr,
         entryCount: vault.entries.length,
         checksum: calculateChecksum(JSON.stringify(serializedVault)),
       },

@@ -11,7 +11,7 @@ import {
   deleteEntry,
   getEntry,
   updateEntry,
-} from "../src/vault/vault";
+} from "../src/vault";
 
 describe("Vault Module", () => {
   let testVault: Vault;

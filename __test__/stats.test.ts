@@ -4,8 +4,8 @@ import {
   getDuplicatePasswordEntries,
   getVaultStats,
   getWeakPasswordEntries,
-} from "../src/vault/stats";
-import { addEntry, createVault } from "../src/vault/vault";
+} from "../src/vault";
+import { addEntry, createVault } from "../src/vault";
 
 describe("Stats Module", () => {
   let testVault: Vault;

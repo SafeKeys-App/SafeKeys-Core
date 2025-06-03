@@ -11,7 +11,7 @@ import {
   updateEntryData,
   validateCreateEntryData,
   validateEntry,
-} from "../src/vault/entry";
+} from "../src/vault";
 
 describe("Entry Module", () => {
   describe("createEntry", () => {

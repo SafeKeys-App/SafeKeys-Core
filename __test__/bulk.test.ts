@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { bulkAddEntries, bulkDeleteEntries } from "../src/vault/bulk";
-import { createVault } from "../src/vault/vault";
+import { bulkAddEntries, bulkDeleteEntries } from "../src/vault";
+import { createVault } from "../src/vault";
 import { CreateVaultEntryData, EntryCategory, Vault } from "../src/types";
 
 describe("Bulk Operations Module", () => {

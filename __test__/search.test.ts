@@ -6,12 +6,13 @@ import {
   VaultSearchOptions,
 } from "../src/types";
 import {
+  addEntry,
+  createVault,
   getEntriesByCategory,
   getFavoriteEntries,
   getRecentlyModifiedEntries,
   searchEntries,
-} from "../src/vault/search";
-import { addEntry, createVault } from "../src/vault/vault";
+} from "../src/vault";
 
 describe("Search Module", () => {
   let testVault: Vault;

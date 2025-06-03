@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
 
+import { FieldType } from "../src/types";
 import {
   addCustomField,
   createCustomField,
+  createEntry,
   removeCustomField,
   updateCustomField,
   validateCustomFieldData,
-} from "../src/vault/customFields";
-import { createEntry } from "../src/vault/entry";
-import { FieldType } from "../src/types";
+} from "../src/vault";
 
 describe("Custom Fields Module", () => {
   describe("createCustomField", () => {
