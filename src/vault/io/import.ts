@@ -1,102 +1,13 @@
-import { decryptVault, encryptVault } from "../../crypto/encryption";
+import { decryptVault } from "../../crypto/encryption";
 import {
   csvHeadersSchema,
   vaultFileSchema,
 } from "../../schemas/importExportSchemas";
-import {
-  EncryptedVault,
-  EntryCategory,
-  Vault,
-  VAULT_VERSION,
-  VaultEntry,
-} from "../../types/core";
-import { ExportOptions, ImportResult } from "../../types/features";
+import { Vault, VAULT_VERSION } from "../../types/core";
+import { ImportResult } from "../../types/features";
 import { generateId } from "../../utils/id-generator";
 import { validateVaultEntry } from "../../validation/validator";
-
-/**
- * Exporte un vault dans un format spécifié, avec ou sans chiffrement
- * @param vault - Le vault à exporter
- * @param masterPassword - Mot de passe maître pour le chiffrement (obligatoire si encrypted=true)
- * @param options - Options d'exportation
- * @returns Promise<string> - Données exportées (JSON ou format brut)
- */
-export const exportVault = async (
-  vault: Vault,
-  masterPassword?: string,
-  options: ExportOptions = {
-    format: "vault",
-    includePasswords: true,
-    encrypted: true,
-  }
-): Promise<string> => {
-  // Créer une copie profonde du vault pour éviter de modifier l'original
-  const vaultCopy = JSON.parse(JSON.stringify(vault));
-
-  // Filtrer par catégories si spécifié
-  if (options.categories && options.categories.length > 0) {
-    vaultCopy.entries = vaultCopy.entries.filter((entry: VaultEntry) =>
-      options.categories!.includes(entry.category as EntryCategory)
-    );
-  }
-
-  // Supprimer les mots de passe si non inclus
-  if (!options.includePasswords) {
-    vaultCopy.entries = vaultCopy.entries.map((entry: VaultEntry) => {
-      const { password, ...rest } = entry;
-      return rest;
-    });
-  }
-
-  // Gérer les différents formats d'export
-  switch (options.format) {
-    case "csv":
-      return convertVaultToCsv(vaultCopy);
-
-    case "json":
-      return JSON.stringify(vaultCopy, null, 2);
-
-    case "vault":
-    default:
-      // Pour le format vault, on chiffre toujours les données
-      if (!masterPassword && options.encrypted) {
-        throw new Error(
-          "Master password is required for encrypted vault export"
-        );
-      }
-
-      // Convertir les dates en chaînes pour la sérialisation
-      const serializedVault = serializeVault(vaultCopy);
-
-      // Si l'encryption est demandée
-      if (options.encrypted) {
-        const encrypted = await encryptVault(
-          JSON.stringify(serializedVault),
-          masterPassword!
-        );
-
-        // Créer l'objet EncryptedVault
-        const encryptedVault: EncryptedVault = {
-          data: encrypted,
-          salt: "", // Automatiquement géré par encryptVault
-          iv: "", // Automatiquement géré par encryptVault
-          version: VAULT_VERSION,
-          metadata: {
-            name: vaultCopy.name,
-            createdAt: vaultCopy.createdAt.toISOString(),
-            lastModified: vaultCopy.updatedAt.toISOString(),
-            entryCount: vaultCopy.entries.length,
-            checksum: calculateChecksum(JSON.stringify(serializedVault)),
-          },
-        };
-
-        return JSON.stringify(encryptedVault);
-      }
-
-      // Sinon retourner le vault non chiffré en JSON
-      return JSON.stringify(serializedVault);
-  }
-};
+import { deserializeVault, parseCSVLine } from "./utils";
 
 /**
  * Importe un vault à partir d'une chaîne, avec support pour différents formats
@@ -146,38 +57,6 @@ export const importVault = async (
 };
 
 /**
- * Sauvegarde un vault dans un fichier
- * @param vault - Le vault à sauvegarder
- * @param filePath - Chemin du fichier de destination
- * @param masterPassword - Mot de passe maître pour le chiffrement
- * @param options - Options d'exportation
- * @returns Promise<void>
- */
-export const saveVaultToFile = async (
-  vault: Vault,
-  filePath: string,
-  masterPassword: string,
-  options: ExportOptions = {
-    format: "vault",
-    includePasswords: true,
-    encrypted: true,
-  }
-): Promise<void> => {
-  try {
-    // Exporter le vault
-    const exportedData = await exportVault(vault, masterPassword, options);
-
-    // Utiliser l'API FileSystem pour sauvegarder le fichier
-    await writeFile(filePath, exportedData);
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(`Failed to save vault to file: ${error.message}`);
-    }
-    throw new Error("Unknown error occurred while saving vault to file");
-  }
-};
-
-/**
  * Charge un vault depuis un fichier
  * @param filePath - Chemin du fichier source
  * @param masterPassword - Mot de passe maître pour le déchiffrement si nécessaire
@@ -217,88 +96,8 @@ export const loadVaultFromFile = async (
   }
 };
 
-// Fonctions utilitaires
-
 /**
- * Sérialiser les dates dans le vault pour le stockage JSON
- */
-function serializeVault(vault: Vault): any {
-  const serialized = { ...vault };
-
-  // Convertir les dates en chaînes ISO
-  if (serialized.createdAt instanceof Date) {
-    (serialized as any).createdAt = serialized.createdAt.toISOString();
-  }
-  if (serialized.updatedAt instanceof Date) {
-    (serialized as any).updatedAt = serialized.updatedAt.toISOString();
-  }
-
-  // Sérialiser les dates dans les entrées
-  if (Array.isArray(serialized.entries)) {
-    serialized.entries = serialized.entries.map((entry: VaultEntry) => {
-      const serializedEntry = { ...entry };
-      if (serializedEntry.createdAt instanceof Date) {
-        (serializedEntry as any).createdAt =
-          serializedEntry.createdAt.toISOString();
-      }
-      if (serializedEntry.updatedAt instanceof Date) {
-        (serializedEntry as any).updatedAt =
-          serializedEntry.updatedAt.toISOString();
-      }
-      return serializedEntry;
-    });
-  }
-
-  return serialized;
-}
-
-/**
- * Désérialiser un vault (convertir les chaînes ISO en dates)
- */
-function deserializeVault(vault: any): Vault {
-  const deserialized = { ...vault };
-
-  // Convertir les chaînes ISO en dates
-  if (typeof deserialized.createdAt === "string") {
-    deserialized.createdAt = new Date(deserialized.createdAt);
-  }
-  if (typeof deserialized.updatedAt === "string") {
-    deserialized.updatedAt = new Date(deserialized.updatedAt);
-  }
-
-  // Désérialiser les dates dans les entrées
-  if (Array.isArray(deserialized.entries)) {
-    deserialized.entries = deserialized.entries.map((entry: any) => {
-      const deserializedEntry = { ...entry };
-      if (typeof deserializedEntry.createdAt === "string") {
-        deserializedEntry.createdAt = new Date(deserializedEntry.createdAt);
-      }
-      if (typeof deserializedEntry.updatedAt === "string") {
-        deserializedEntry.updatedAt = new Date(deserializedEntry.updatedAt);
-      }
-      return deserializedEntry;
-    });
-  }
-
-  return deserialized as Vault;
-}
-
-/**
- * Calculer un checksum simple pour vérifier l'intégrité
- */
-function calculateChecksum(data: string): string {
-  // Implémentation simple d'un hash, à remplacer par un algorithme plus robuste
-  let hash = 0;
-  for (let i = 0; i < data.length; i++) {
-    const char = data.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash = hash & hash; // Convertir en un entier 32 bits
-  }
-  return Math.abs(hash).toString(16);
-}
-
-/**
- * Importer un vault chiffré
+ * Importe un vault chiffré
  */
 async function importEncryptedVault(
   data: string,
@@ -386,7 +185,7 @@ async function importEncryptedVault(
 }
 
 /**
- * Importer un vault au format JSON
+ * Importe un vault au format JSON
  */
 function importJsonVault(
   data: string,
@@ -495,7 +294,7 @@ function importJsonVault(
 }
 
 /**
- * Importer un vault au format CSV
+ * Importe un vault au format CSV
  */
 function importCsvVault(
   data: string,
@@ -628,108 +427,10 @@ function importCsvVault(
 }
 
 /**
- * Parser une ligne CSV en tenant compte des guillemets
+ * Lit un fichier
+ * @param filePath - Chemin du fichier
+ * @returns Promise<string> - Contenu du fichier
  */
-function parseCSVLine(line: string): string[] {
-  const result: string[] = [];
-  let current = "";
-  let inQuotes = false;
-
-  for (let i = 0; i < line.length; i++) {
-    const char = line[i];
-
-    if (char === '"') {
-      // Si on a deux guillemets consécutifs à l'intérieur d'une chaîne entre guillemets,
-      // c'est un guillemet échappé
-      if (inQuotes && i < line.length - 1 && line[i + 1] === '"') {
-        current += '"';
-        i++; // Sauter le prochain guillemet
-      } else {
-        // Sinon, c'est un début ou une fin de chaîne entre guillemets
-        inQuotes = !inQuotes;
-      }
-    } else if (char === "," && !inQuotes) {
-      // Fin d'une valeur, si on n'est pas entre guillemets
-      result.push(current);
-      current = "";
-    } else {
-      // Ajouter le caractère à la valeur courante
-      current += char;
-    }
-  }
-
-  // Ajouter la dernière valeur
-  result.push(current);
-
-  return result;
-}
-
-/**
- * Convertir un vault en format CSV
- */
-function convertVaultToCsv(vault: Vault): string {
-  // Définir les en-têtes CSV
-  const headers = [
-    "title",
-    "username",
-    "password",
-    "url",
-    "notes",
-    "category",
-    "tags",
-    "favorite",
-  ];
-
-  // Créer la ligne d'en-tête
-  let csv = headers.join(",") + "\n";
-
-  // Ajouter chaque entrée
-  for (const entry of vault.entries) {
-    const row = [
-      escapeCSV(entry.title),
-      escapeCSV(entry.username || ""),
-      escapeCSV(entry.password || ""),
-      escapeCSV(entry.url || ""),
-      escapeCSV(entry.notes || ""),
-      escapeCSV(entry.category?.toString() || ""),
-      escapeCSV(entry.tags ? entry.tags.join(";") : ""),
-      String(entry.favorite || false),
-    ];
-
-    csv += row.join(",") + "\n";
-  }
-
-  return csv;
-}
-
-/**
- * Échapper une valeur pour le CSV
- */
-function escapeCSV(value: string): string {
-  if (value === null || value === undefined) {
-    return "";
-  }
-
-  const strValue = String(value);
-
-  // Si la valeur contient des virgules, des guillemets ou des sauts de ligne,
-  // l'entourer de guillemets et échapper les guillemets internes
-  if (/[",\n\r]/.test(strValue)) {
-    return `"${strValue.replace(/"/g, '""')}"`;
-  }
-
-  return strValue;
-}
-
-/**
- * Fonctions d'accès au système de fichiers
- * À implémenter selon la plateforme cible (Node.js, Electron, Web, etc.)
- */
-async function writeFile(filePath: string, data: string): Promise<void> {
-  // Implémentation à adapter selon la plateforme
-  throw new Error("File system access not implemented");
-}
-
 async function readFile(filePath: string): Promise<string> {
   // Implémentation à adapter selon la plateforme
   throw new Error("File system access not implemented");
