@@ -26,6 +26,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Ajouter un polyfill pour crypto
       - name: Setup Node.js crypto
         run: |
           echo "NODE_OPTIONS=--experimental-global-webcrypto" >> $GITHUB_ENV
@@ -36,8 +37,19 @@ jobs:
       - name: Run coverage tests
         run: npm test -- --coverage
 
+      # Étape optionnelle - ne fera pas échouer le build si Codecov échoue
       - name: Upload coverage report
         uses: codecov/codecov-action@v3
+        continue-on-error: true # Ne pas faire échouer le workflow si cette étape échoue
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }} # Configurez ce token dans les secrets du dépôt GitHub
+          fail_ci_if_error: false # Ne pas faire échouer le CI si l'upload échoue
+
+# Notes pour les mainteneurs:
+# ===========================
+# Pour configurer Codecov correctement:
+# 1. Créez un compte sur https://codecov.io/
+# 2. Connectez-vous avec votre compte GitHub et ajoutez votre dépôt
+# 3. Obtenez un token de dépôt dans les paramètres du dépôt sur Codecov
+# 4. Dans votre dépôt GitHub, allez dans Settings > Secrets and variables > Actions
+# 5. Ajoutez un nouveau secret nommé CODECOV_TOKEN avec la valeur du token
