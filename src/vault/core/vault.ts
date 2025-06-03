@@ -6,9 +6,9 @@ import {
   Vault,
   VAULT_VERSION,
   VaultEntry,
-} from "../types";
-import { generateId } from "../utils/id-generator";
-import { createEntry, validateCreateEntryData } from "./entry";
+} from "../../types";
+import { generateId } from "../../utils/id-generator";
+import { createEntry, validateCreateEntryData } from "../entries/entry";
 
 /**
  * Creates a new vault with default settings

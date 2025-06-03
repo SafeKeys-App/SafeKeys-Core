@@ -1,12 +1,12 @@
 import { z } from "zod";
-import { ValidationError, ValidationResult, ValidationWarning } from "../types";
 import {
   createCustomFieldSchema,
   createVaultEntrySchema,
   passwordStrengthSchema,
   updateVaultEntrySchema,
   vaultEntrySchema,
-} from "./schemas";
+} from "../schemas/entrySchemas";
+import { ValidationError, ValidationResult, ValidationWarning } from "../types";
 
 /**
  * Converts Zod validation errors to our ValidationError format

@@ -5,20 +5,14 @@
  * It re-exports all specific functionalities from dedicated modules.
  */
 
+// Re-export core vault operations
+export * from "./core";
+
 // Re-export entry operations
-export * from "./entry";
+export * from "./entries";
 
-// Re-export custom field operations
-export * from "./customFields";
+// Re-export import/export operations
+export * from "./io";
 
-// Re-export vault operations
-export * from "./vault";
-
-// Re-export search operations
-export * from "./search";
-
-// Re-export stats operations
-export * from "./stats";
-
-// Re-export bulk operations
-export * from "./bulk";
+// Re-export analysis operations (search & stats)
+export * from "./analysis";

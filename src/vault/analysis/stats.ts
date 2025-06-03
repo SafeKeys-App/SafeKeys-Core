@@ -1,4 +1,4 @@
-import { EntryCategory, Vault, VaultEntry, VaultStats } from "../types";
+import { EntryCategory, Vault, VaultEntry, VaultStats } from "../../types";
 
 /**
  * Gets comprehensive statistics about the vault

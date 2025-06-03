@@ -3,13 +3,13 @@ import {
   EntryCategory,
   ValidationResult,
   VaultEntry,
-} from "../types";
-import { generateId } from "../utils/id-generator";
+} from "../../types";
+import { generateId } from "../../utils/id-generator";
 import {
   validateCreateVaultEntry,
   validateUpdateVaultEntry,
   validateVaultEntry,
-} from "../validation/validator";
+} from "../../validation/validator";
 
 /**
  * Creates a new vault entry with generated ID and timestamps

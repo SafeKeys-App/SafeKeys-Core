@@ -1,6 +1,11 @@
-import { CustomField, FieldType, ValidationResult, VaultEntry } from "../types";
-import { generateId } from "../utils/id-generator";
-import { validateCreateCustomField } from "../validation/validator";
+import {
+  CustomField,
+  FieldType,
+  ValidationResult,
+  VaultEntry,
+} from "../../types";
+import { generateId } from "../../utils/id-generator";
+import { validateCreateCustomField } from "../../validation/validator";
 import { updateEntryData } from "./entry";
 
 /**

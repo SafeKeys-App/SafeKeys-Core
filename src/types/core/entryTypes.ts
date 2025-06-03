@@ -1,5 +1,5 @@
+import { FieldType } from "../utils/fieldTypes";
 import { EntryCategory } from "./categoryTypes";
-import { FieldType } from "./fieldTypes";
 
 export interface VaultEntry {
   id: string;

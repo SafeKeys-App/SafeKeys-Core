@@ -1,5 +1,5 @@
-import { EntryCategory } from "./categoryTypes";
-import { VaultEntry } from "./entryTypes";
+import { EntryCategory } from "../core/categoryTypes";
+import { VaultEntry } from "../core/entryTypes";
 
 export interface VaultSearchOptions {
   query: string;

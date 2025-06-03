@@ -12,3 +12,6 @@ export * from "./utils/id-generator";
 
 // Validation exports
 export * from "./validation";
+
+// Schemas exports
+export * from "./schemas";

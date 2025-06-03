@@ -1,4 +1,4 @@
-import { EntryCategory } from "./categoryTypes";
+import { EntryCategory } from "../core/categoryTypes";
 
 export interface VaultStats {
   totalEntries: number;

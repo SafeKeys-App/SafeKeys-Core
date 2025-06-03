@@ -3,7 +3,7 @@ import {
   ValidationResult,
   Vault,
   VaultEntry,
-} from "../types";
+} from "../../types";
 import { createEntry, validateCreateEntryData } from "./entry";
 
 /**

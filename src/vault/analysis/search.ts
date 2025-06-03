@@ -4,7 +4,7 @@ import {
   VaultEntry,
   VaultSearchOptions,
   VaultSearchResult,
-} from "../types";
+} from "../../types";
 
 /**
  * Performs a search on vault entries based on provided options

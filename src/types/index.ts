@@ -1,23 +1,8 @@
-// Exportation des types de catégories
-export * from "./categoryTypes";
+// Types fondamentaux (vault, entrées, catégories)
+export * from "./core";
 
-// Exportation des types de champs
-export * from "./fieldTypes";
+// Types pour les fonctionnalités (recherche, stats, import/export)
+export * from "./features";
 
-// Exportation des types d'entrées
-export * from "./entryTypes";
-
-// Exportation des types de vault
-export * from "./vaultTypes";
-
-// Exportation des types de recherche
-export * from "./searchTypes";
-
-// Exportation des types de statistiques
-export * from "./statsTypes";
-
-// Exportation des types d'import/export
-export * from "./importExportTypes";
-
-// Exportation des types de validation
-export * from "./validationTypes";
+// Types utilitaires (champs, validation, crypto)
+export * from "./utils";

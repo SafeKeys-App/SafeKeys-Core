@@ -161,6 +161,13 @@ export const passwordStrengthSchema = z.object({
   password: passwordSchema,
 });
 
+// Export schema utility functions
+export const urlSchemaFn = () => urlSchema;
+export const emailSchemaFn = () => emailSchema;
+export const passwordSchemaFn = () => passwordSchema;
+export const customFieldSchemaFn = () => customFieldSchema;
+export const usernameSchemaFn = () => usernameSchema;
+
 // Export types inferred from schemas
 export type VaultEntryInput = z.infer<typeof vaultEntrySchema>;
 export type CreateVaultEntryInput = z.infer<typeof createVaultEntrySchema>;
