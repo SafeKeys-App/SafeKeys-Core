@@ -5,7 +5,6 @@ export default defineConfig({
     globals: true,
     environment: "node",
     include: ["src/**/*.test.ts", "__test__/**/*.test.ts"],
-    setupFiles: ["./src/crypto/polyfill.ts"],
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
